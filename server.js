@@ -9,6 +9,8 @@ const db_config = require('./configs/db.config')
 const user_model = require('./models/user.model.js')
 const bcrypt = require("bcryptjs")
 
+app.use(express.json()); //using as middleware (to convert json data into javascript object)
+
 
 /**
  * Create an admin user at the starting of the application 
@@ -41,7 +43,7 @@ async function init(){
         console.log("Erro while reading the data", err);
     }
 
-    
+
     try{
         user = await user_model.create({
             name : "Aditi",
@@ -59,6 +61,14 @@ async function init(){
         console.log(err);
     }
 }
+
+/**
+ * Stich the route to the server
+ * now my server know where the route is
+ * route knows where controller is
+ * controller know where my model is
+ */ 
+require('./routes/auth.routes.js')(app) //calling routes and passing app obj
 
 /**
  * Start the server
