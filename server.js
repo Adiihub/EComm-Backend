@@ -48,7 +48,6 @@ async function init(){
         user = await user_model.create({
             name : "Aditi",
             userId : "admin",
-            password : "admin",
             email : "admin@gmail.com",
             userType : "ADMIN",
             // password : "admin" //Pasword should be encrypted
