@@ -2,6 +2,8 @@
  * Create a MiddleWare which checks the request body is proper and correct
  */
 const user_model = require("../models/user.model")
+const jwt = require("jsonwebtoken");
+const auth_config = require('../configs/auth.config')
 
 const verifySignUpBody = async (req, res, next) => {
 
@@ -58,7 +60,53 @@ const verifySignInBody = async (req, res, next) => {
     next();
 }
 
+const verifyToken = (req, res, next) => {
+
+    // Check if the token is present in the Header
+    const token = req.headers['x-access-token']
+    if (!token) {
+        return res.status(403).send({
+            message: "No Token Found : UnAuthorised"
+        })
+    }
+
+
+    // If it's the valid token
+    jwt.verify(token, auth_config.secret, async (err, decoded) => {
+        if (err) {
+            return res.status(401).send({
+                message: "UnAuthorised"
+            })
+        }
+        const user = await user_model.findOne({ userId: decoded.id })
+        if (!user) {
+            res.status(400).send({
+                message: "UnAuthorised, this user for this token doesn't exist"
+            })
+        }
+        //Set the user info in the request Body
+        req.user = user;
+        next();
+
+    })
+    // Move to the next step
+}
+
+const isAdmin = (req, res, next) => {
+    const user = req.user
+    if(user && user.userType == "ADMIN"){
+        next()
+    }
+    else{
+        return res.status(403).send({
+            message : "Only Admin are allowed to Access this endpoint"
+        })
+    }
+}
+
 module.exports = {
     verifySignUpBody: verifySignUpBody,
-    verifySignInBody: verifySignInBody
+    verifySignInBody: verifySignInBody,
+    verifyToken: verifyToken,
+    isAdmin: isAdmin
 }

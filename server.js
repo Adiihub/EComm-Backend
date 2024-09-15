@@ -68,6 +68,7 @@ async function init(){
  * controller know where my model is
  */ 
 require('./routes/auth.routes.js')(app) //calling routes and passing app obj
+require('./routes/category.routes.js')(app)
 
 /**
  * Start the server
