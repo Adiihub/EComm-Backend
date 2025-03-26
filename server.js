@@ -17,7 +17,8 @@ app.use(express.json()); //using as middleware (to convert json data into javasc
  * if already not present
  */
 // COnnection of Mongo Database
-mongoose.connect(db_config.DB_URL)
+mongoose.connect(db_config.DB_URL);
+// mongoose.connect(db_config.DB_URL).then(() => console.log("DataBase Connected"));
 
 const db = mongoose.connection;
 
@@ -40,7 +41,7 @@ async function init(){
             return;
         }
     }catch(err){
-        console.log("Erro while reading the data", err);
+        console.log("Error while reading the data", err);
     }
 
 
